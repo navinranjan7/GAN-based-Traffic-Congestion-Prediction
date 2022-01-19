@@ -409,24 +409,25 @@ def train(d_model, g_model, gan_model, x_train, y_train1,x_vali, y_vali1, epochs
             x_generator = g_model.predict(x_train_g)
             x_train_d1 = x_train_d.reshape(1,192, 448, 48)
             x_generator = x_generator.reshape(1,192, 448, 48)
-#            x_train_in = x_train_g.reshape(1,192,448,36)
 
             '''Train discriminator in real and fake data'''
             d_loss_real = d_model.train_on_batch(x_train_d1, y_real)
 
             d_loss_fake = d_model.train_on_batch(x_generator, y_fake)
-
 #            d_loss = 0.5* np.add(d_loss_real, d_loss_fake)
             
-            #update generator model
+            '''update generator model'''
             g_loss = gan_model.train_on_batch(x_train_g,y_real)   #%% look 
 #            print('done_gan')
-            print("%d  %d [D loss:  %f %f, acc.: %.2f%%   %.2f%%] [G loss: %f %f ]" % (epoch, i, d_loss_real[0], d_loss_fake[0], d_loss_real[1],d_loss_fake[1],g_loss[0],g_loss[1]))
+            print("%d  %d [D loss:  %f %f, acc.: %.2f%%   %.2f%%] [G loss: %f %f ]" % (epoch, i, 
+                          d_loss_real[0], d_loss_fake[0], d_loss_real[1],d_loss_fake[1],g_loss[0],g_loss[1]))
+ 
             if (i+1) % 100 == 0:
                 summarize_performance(g_model, x_train, y_train,i, epoch*len(x_train) + i)
             if (i+1) % 500 == 0:
                 accuracy_check(g_model, x_vali, y_vali1)
 #%%
+'''Training Process '''
 optimizer = Adam(lr = 0.00001, beta_1 = 0.9)
 source_image_shape = [12, 192, 448, 3]
 source_f_shape = [192,448,36]
@@ -443,6 +444,4 @@ from keras.models import save_model, load_model
 gan_model.save('/home/navin/t1.h5')
 d_model.save('/home/navin/t_d.h5')
 g_model.save('/home/navin/tg.h5')
-##%%
-
 #%%
